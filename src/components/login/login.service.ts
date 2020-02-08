@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
-import { AuthenticateUserDto } from '../../shared/user/dtos/authenticate-user.dto';
+import { AuthenticateUserDto } from 'src/shared/user/dtos/authenticate-user.dto';
 
 @Injectable()
 export class LoginService {
@@ -8,5 +8,6 @@ export class LoginService {
 
   async login(user: AuthenticateUserDto) {
     const foundUser = this.authService.authenticateUser(user);
+    return foundUser;
   }
 }

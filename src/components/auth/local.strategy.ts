@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(user: AuthenticateUserDto) {
     const userFound = this.authService.authenticateUser(user);
 
-    if(!userFound) {
+    if (!userFound) {
       throw new UnauthorizedException();
     }
 

@@ -7,7 +7,7 @@ import { IUserService } from './interfaces/user.service.interface';
 export class UserService implements IUserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async create(user: User): Promise<Boolean> {
+  async create(user: User): Promise<boolean> {
     const newUser = this.userRepository.save(user);
 
     return (newUser ? true : false);

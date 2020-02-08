@@ -11,20 +11,20 @@ export class UserMockRepository implements IUserRepository {
   }
 
   async save(user: User): Promise<User> {
-    if(await this.find(user.email)) {
-      throw new Error("User already exists!"); 
+    if (await this.find(user.email)) {
+      throw new Error('User already exists!');
     }
-    user.id = `${Math.floor(Math.random() * 1000)}`
+    user.id = `${Math.floor(Math.random() * 1000)}`;
     this.db.push(user);
-    console.log(this.db)
-    
+    console.log(this.db);
+
     return user;
   }
 
   async find(email: string): Promise<User> {
-    const user = this.db.filter(user => user.email === email);
+    const user = this.db.filter(dbUser => dbUser.email === email);
 
-    if(!user) {
+    if (!user) {
       return;
     }
 

@@ -6,10 +6,10 @@ import { UserMockRepository } from './user.repository';
 @Global()
 @Module({
   providers: [
-    UserService, 
-    UserMockRepository
+    UserService,
+    UserMockRepository,
   ],
   controllers: [UserController],
-  exports: [UserService]
+  exports: [UserService],
 })
 export class UserModule {}

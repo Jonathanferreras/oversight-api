@@ -1,58 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../../shared/user/user.service';
-import { RegisterUserDto } from '../../shared/user/dtos/register-user.dto';
+import { UserService } from 'src/shared/user/user.service';
+import { RegisterUserDto } from 'src/shared/user/dtos/register-user.dto';
 import { RegistrationStatus } from './interfaces/registration-status';
-import { AuthenticateUserDto } from '../../shared/user/dtos/authenticate-user.dto';
+import { AuthenticateUserDto } from 'src/shared/user/dtos/authenticate-user.dto';
 import { User } from 'src/shared/user/user';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) { }
 
-  async authenticateUser(user: AuthenticateUserDto): Promise<User> {
+  async authenticateUser(user: AuthenticateUserDto): Promise<User | null> {
     const foundUser = await this.userService.find(user.email);
     const correctPassword = await this.comparePasswordToHash(user.password, foundUser.hash);
 
-    if(foundUser && correctPassword) {
-      // stuff here
+    if (foundUser && correctPassword) {
+      return foundUser;
     }
 
-    return foundUser;
+    return null;
   }
 
   async registerUser(user: RegisterUserDto): Promise<RegistrationStatus> {
-    let status: RegistrationStatus = {
+    const { firstname, lastname, email, password } = user;
+    const status: RegistrationStatus = {
       success: false,
-      message: ''
-    }
+      message: '',
+    };
 
-    if (await this.userService.find(user.email)) {
+    if (await this.userService.find(email)) {
       status.message = 'User already exists!';
 
       return status;
     }
 
-    const { firstname, lastname, email, password } = user;
     const hash = await this.encryptPassword(password);
     const newUser = this.userService.create({
       firstname,
       lastname,
       email,
-      hash
+      hash,
     });
 
     if (!newUser) {
       status.message = 'User was not registered!';
 
-      return status;
-    } 
-    else {
+    } else {
       status.success = true;
       status.message = 'User was registered!';
-
-      return status;
     }
+
+    return status;
   }
 
   private async encryptPassword(data: string): Promise<string> {
@@ -62,7 +60,7 @@ export class AuthService {
     return await bcrypt.hash(data, salt);
   }
 
-  private async comparePasswordToHash(password: string, hash: string): Promise<Boolean> {
+  private async comparePasswordToHash(password: string, hash: string): Promise<boolean> {
     return await bcrypt.compare(password, hash);
   }
 }
