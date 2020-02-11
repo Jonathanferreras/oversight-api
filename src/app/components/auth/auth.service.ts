@@ -1,18 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserService } from 'src/shared/user/user.service';
-import { RegisterUserDto } from 'src/shared/user/dtos/register-user.dto';
+import { UserService } from 'src/app/shared/user/user.service';
+import { RegisterUserDto } from 'src/app/shared/user/dtos/register-user.dto';
 import { RegistrationStatus } from './interfaces/registration-status';
-import { AuthenticateUserDto } from 'src/shared/user/dtos/authenticate-user.dto';
-import { User } from 'src/shared/user/user';
+import { AuthenticateUserDto } from 'src/app/shared/user/dtos/authenticate-user.dto';
+import { User } from 'src/app/shared/user/user';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   async authenticateUser(user: AuthenticateUserDto): Promise<User | null> {
-    const foundUser = await this.userService.find(user.email);
-    const correctPassword = await this.comparePasswordToHash(user.password, foundUser.hash);
+    const { username, password } = user;
+    const foundUser = await this.userService.find(username);
+
+    if (!foundUser) {
+      return null;
+    }
+
+    const correctPassword = await this.comparePasswordToHash(
+      password,
+      foundUser.hash,
+    );
 
     if (foundUser && correctPassword) {
       return foundUser;

@@ -10,6 +10,7 @@ export class LoginController {
   @UseGuards(AuthGuard('local'))
   @Post()
   async loginUser(@Body('user') user: AuthenticateUserDto) {
-    return await this.loginService.login(user);
+    const foundUser = await this.loginService.login(user);
+    return foundUser;
   }
 }
