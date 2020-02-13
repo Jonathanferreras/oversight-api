@@ -1,72 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/app/shared/user/user.service';
-import { RegisterUserDto } from 'src/app/shared/user/dtos/register-user.dto';
-import { RegistrationStatus } from './interfaces/registration-status';
-import { AuthenticateUserDto } from 'src/app/shared/user/dtos/authenticate-user.dto';
-import { User } from 'src/app/shared/user/user';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  async authenticateUser(user: AuthenticateUserDto): Promise<User | null> {
-    const { username, password } = user;
-    const foundUser = await this.userService.find(username);
+  async authenticateUser(username: string, password: string) {
+    const user = await this.userService.find(username);
 
-    if (!foundUser) {
-      return null;
-    }
+    if (user && await this.comparePasswordToHash(password, user.hash)) {
 
-    const correctPassword = await this.comparePasswordToHash(
-      password,
-      foundUser.hash,
-    );
-
-    if (foundUser && correctPassword) {
-      return foundUser;
+    return {
+      success: true,
+      message: 'Login successful!',
+      };
     }
 
     return null;
-  }
-
-  async registerUser(user: RegisterUserDto): Promise<RegistrationStatus> {
-    const { firstname, lastname, email, password } = user;
-    const status: RegistrationStatus = {
-      success: false,
-      message: '',
-    };
-
-    if (await this.userService.find(email)) {
-      status.message = 'User already exists!';
-
-      return status;
-    }
-
-    const hash = await this.encryptPassword(password);
-    const newUser = this.userService.create({
-      firstname,
-      lastname,
-      email,
-      hash,
-    });
-
-    if (!newUser) {
-      status.message = 'User was not registered!';
-
-    } else {
-      status.success = true;
-      status.message = 'User was registered!';
-    }
-
-    return status;
-  }
-
-  private async encryptPassword(data: string): Promise<string> {
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-
-    return await bcrypt.hash(data, salt);
   }
 
   private async comparePasswordToHash(password: string, hash: string): Promise<boolean> {
