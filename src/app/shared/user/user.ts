@@ -7,5 +7,4 @@ export class User {
   @IsString() readonly hash: string;
   @IsString() @IsOptional() id?: string;
   @IsBoolean() @IsOptional() isLoggedIn?: boolean;
-  @IsBoolean() @IsOptional() isRegistered?: boolean;
 }
