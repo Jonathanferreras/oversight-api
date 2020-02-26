@@ -1,13 +1,13 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { SignupService } from './signup.service';
-import { RegisterUserDto } from '../../shared/user/dtos/register-user.dto';
+import { SignupUserDto } from './signup-user.dto';
 
 @Controller('signup')
 export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
   @Post()
-  async signupUser(@Body('user') user: RegisterUserDto) {
+  async signupUser(@Body('user') user: SignupUserDto) {
     return await this.signupService.registerUser(user);
   }
 }

@@ -1,6 +1,6 @@
 import { IsBoolean, IsString } from 'class-validator';
 
-export class RegistrationStatus {
+export class SignupStatus {
   @IsBoolean() success: boolean;
   @IsString() message: string;
 }

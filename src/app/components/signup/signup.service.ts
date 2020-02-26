@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { RegisterUserDto } from '../../shared/user/dtos/register-user.dto';
-import { RegistrationStatus } from '../auth/interfaces/registration-status';
-import { UserService } from 'src/app/shared/user/user.service';
+import { SignupUserDto } from './signup-user.dto';
+import { SignupStatus } from './signup-status';
+import { UserService } from 'src/app/components/user/user.service';
 
 @Injectable()
 export class SignupService {
   constructor(private readonly userService: UserService) {}
 
-  async registerUser(user: RegisterUserDto): Promise<RegistrationStatus> {
+  async registerUser(user: SignupUserDto): Promise<SignupStatus> {
     const { firstname, lastname, email, password } = user;
-    const status: RegistrationStatus = {
+    const status: SignupStatus = {
       success: false,
       message: '',
     };
