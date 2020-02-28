@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './components/user/user.module';
-import { SignupModule } from './components/signup/signup.module';
-import { AuthModule } from './components/auth/auth.module';
+import { UserModule } from './user/user.module';
+import { SignupModule } from './signup/signup.module';
+import { AuthModule } from './auth/auth.module';
 // import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({

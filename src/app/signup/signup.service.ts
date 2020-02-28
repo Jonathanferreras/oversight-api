@@ -2,27 +2,27 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { SignupUserDto } from './signup-user.dto';
 import { SignupStatus } from './signup-status';
-import { UserService } from 'src/app/components/user/user.service';
+import { UserService } from 'src/app/user/user.service';
 
 @Injectable()
 export class SignupService {
   constructor(private readonly userService: UserService) {}
 
-  async registerUser(user: SignupUserDto): Promise<SignupStatus> {
+  async handleUserSignup(user: SignupUserDto): Promise<SignupStatus> {
     const { firstname, lastname, email, password } = user;
     const status: SignupStatus = {
       success: false,
       message: '',
     };
 
-    if (await this.userService.find(email)) {
+    if (await this.userService.handleFindUser(email)) {
       status.message = 'User already exists!';
 
       return status;
     }
 
-    const hash = await this.encryptPassword(password);
-    const newUser = this.userService.create({
+    const hash = await this.handlePasswordEncryption(password);
+    const newUser = this.userService.handleCreateUser({
       firstname,
       lastname,
       email,
@@ -40,7 +40,7 @@ export class SignupService {
     return status;
   }
 
-  private async encryptPassword(data: string): Promise<string> {
+  private async handlePasswordEncryption(data: string): Promise<string> {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
 

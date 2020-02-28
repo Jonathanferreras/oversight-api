@@ -8,6 +8,6 @@ export class SignupController {
 
   @Post()
   async signupUser(@Body('user') user: SignupUserDto) {
-    return await this.signupService.registerUser(user);
+    return await this.signupService.handleUserSignup(user);
   }
 }
